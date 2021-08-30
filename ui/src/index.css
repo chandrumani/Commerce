@@ -186,6 +186,10 @@ img.large{
   color: #a02020;
   background-color: #ffe0e0e0;
 }
+.alert-success{
+  color: #20a020;
+  background-color: #feeff0e0;
+}
 
 .form{
   max-width: 60rem;
@@ -200,7 +204,6 @@ img.large{
 
 .form label{
   margin: 1rem 0;
-  display: block;
 }
 
 .dropdown{
