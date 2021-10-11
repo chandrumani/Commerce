@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-mongoose.connect(process.env.MONGODB_URL || 'mongodb+srv://chandru:infy123@clusterbox.tdzoz.mongodb.net/commerce?retryWrites=true&w=majority',{
+mongoose.connect(process.env.MONGODB_URL || '',{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
