@@ -7,6 +7,8 @@ import { isAdmin, isAuth, isSellerOrAdmin } from '../utils.js';
 const productRouter = express.Router();
 
 productRouter.get('/', expressAsyncHandler(async (req, res) => {
+    const pageSize = 3;
+    const page = Number(req.query.pageNumber) || 1;
     const name = req.query.name || '';
     const category = req.query.category || '';
     const seller = req.query.seller || '';
@@ -32,9 +34,9 @@ productRouter.get('/', expressAsyncHandler(async (req, res) => {
         : order === 'toprated'
         ? { rating: -1 }
         : { _id: -1 };
-
-    const products = await Product.find({...sellerFilter, ...nameFilter, ...categoryFilter, ...priceFilter, ...ratingFilter}).populate('seller','seller.name seller.logo').sort(sortOrder);
-    res.send(products);
+    const count = await Product.count({...sellerFilter, ...nameFilter, ...categoryFilter, ...priceFilter, ...ratingFilter});
+    const products = await Product.find({...sellerFilter, ...nameFilter, ...categoryFilter, ...priceFilter, ...ratingFilter}).populate('seller','seller.name seller.logo').sort(sortOrder).skip(pageSize * (page -1)).limit(pageSize);
+    res.send({products, page, pages: Math.ceil(count / pageSize)});
 }));
 
 productRouter.get(
@@ -107,5 +109,39 @@ productRouter.put(
     } else {
       res.status(404).send({message: 'Product not found'});
     }
-  }))
+  }));
+
+  productRouter.post(
+    '/:id/reviews',
+    isAuth,
+    expressAsyncHandler(async (req, res) => {
+      const productId = req.params.id;
+      const product = await Product.findById(productId);
+      if (product) {
+        if (product.reviews.find((x) => x.name === req.user.name)) {
+          return res
+            .status(400)
+            .send({ message: 'You already submitted a review' });
+        }
+        const review = {
+          name: req.user.name,
+          rating: Number(req.body.rating),
+          comment: req.body.comment,
+        };
+        product.reviews.push(review);
+        product.numReviews = product.reviews.length;
+        product.rating =
+          product.reviews.reduce((a, c) => c.rating + a, 0) /
+          product.reviews.length;
+        const updatedProduct = await product.save();
+        res.status(201).send({
+          message: 'Review Created',
+          review: updatedProduct.reviews[updatedProduct.reviews.length - 1],
+        });
+      } else {
+        res.status(404).send({ message: 'Product Not Found' });
+      }
+    })
+  );
+
 export default productRouter;

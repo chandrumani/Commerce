@@ -171,13 +171,15 @@ function App() {
       <Route path="/search/name/:name?" component={SearchScreen} exact></Route>
       <Route path="/search/category/:category" component={SearchScreen} exact></Route>
       <Route path="/search/category/:category/name/:name" component={SearchScreen} exact></Route>
-      <Route path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order" component={SearchScreen} exact></Route>
+      <Route path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order/pageNumber/:pageNumber" component={SearchScreen} exact></Route>
       <PrivateRoute path="/profile" component={ProfileScreen}></PrivateRoute>
-      <AdminRoute path="/productList" component={ProductListScreen} exact></AdminRoute>
+      <AdminRoute path="/productList/" component={ProductListScreen} exact></AdminRoute>
+      <AdminRoute path="/productList/pageNumber/:pageNumber" component={ProductListScreen} exact></AdminRoute>
       <AdminRoute path="/orderList" component={OrderListScreen} exact></AdminRoute>
       <AdminRoute path="/userList" component={UserListScreen}></AdminRoute>
       <AdminRoute path="/user/:id/edit" component={UserEditScreen}></AdminRoute>
       <SellerRoute path="/productlist/seller" component={ProductListScreen}></SellerRoute>
+      <SellerRoute path="/productlist/seller/pageNumber/:pageNumber" component={ProductListScreen}></SellerRoute>
       <SellerRoute path="/orderlist/seller" component={OrderListScreen}></SellerRoute>
       <Route path="/" component={HomeScreen} exact></Route>
         
